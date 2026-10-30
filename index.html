@@ -22,6 +22,7 @@
         .toggle-eye { position: absolute; right: 15px; cursor: pointer; font-size: 18px; user-select: none; }
         .btn-login { background: #2563eb; color: white; border: none; padding: 12px; font-size: 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         .btn-login:hover { background: #1d4ed8; }
+        .btn-login:disabled { background: #94a3b8; cursor: not-allowed; }
         .error-msg { color: #ef4444; font-size: 13px; text-align: center; display: none; margin-top: 5px; }
 
         /* ---------------- MAIN LAYOUT ---------------- */
@@ -49,6 +50,7 @@
 
         .btn-action { background: #2563eb; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
         .btn-action:hover { background: #1d4ed8; }
+        .btn-action:disabled { background: #94a3b8; cursor: not-allowed; }
         .btn-secondary { background: var(--card-bg); color: #2563eb; border: 1px solid var(--border-color); }
         .btn-secondary:hover { opacity: 0.9; }
 
@@ -66,7 +68,7 @@
         th { background: var(--card-bg); padding: 14px 20px; color: #64748b; font-weight: 600; border-bottom: 1px solid var(--border-color); }
         td { padding: 14px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-color); }
         tr:last-child td { border-bottom: none; }
-        .btn-delete-table { background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .btn-delete-table { background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
         .btn-delete-table:hover { background: #ef4444; color: white; }
 
         .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
@@ -507,686 +509,277 @@
         const API_URL = '';
         let currentFilter = 'all';
 
-        // Lug'at bazasi (O'zbek, English, Русский)
-        const translations = {
-            uz: {
-                titleLogin: "🔐 Tizimga Kirish",
-                btnLogin: "Kirish",
-                mStudents: "👥 O'quvchilar",
-                mGroups: "📋 Guruhlar",
-                mCourses: "📚 Kurslar",
-                mNotif: "🔔 Bildirishnomalar",
-                mSettings: "⚙️ Sozlamalar",
-                btnLogout: "🚪 Chiqish",
-                hStudents: "O'quvchilar",
-                btnArchive: "+ O'QUVCHINI ARXIVLASH",
-                btnAddStudent: "+ O'QUVCHI QO'SHISH",
-                btnRegister: "📋 RO'YXATGA OLISH",
-                stTotalTitle: "Jami o'quvchilar",
-                stActiveTitle: "Hozir o'qiyotganlar",
-                stGradTitle: "Bitirganlar",
-                stTeacherTitle: "Ustozlar",
-                stRegTitle: "Ro'yxatga olinganlar",
-                stArchTitle: "Arxivlangan o'quvchilar",
-                thId: "ID",
-                thName: "Ism Familiya",
-                thPhone: "Telefon raqami",
-                thGroup: "Guruhi",
-                thAddress: "Manzil",
-                thAction: "Amallar",
-                hGroups: "Guruhlar",
-                btnAddGroup: "+ GURUH QO'SHISH",
-                gTotalTitle: "Jami guruhlar",
-                gActiveTitle: "Faol guruhlar",
-                gThId: "ID",
-                gThName: "Guruh Nomi",
-                gThCourse: "Kurs Yo'nalishi",
-                gThTeacher: "O'qituvchi",
-                gThAction: "Amallar",
-                hCourses: "Kurslar",
-                btnAddCourse: "+ KURS QO'SHISH",
-                cTotalTitle: "Jami kurslar",
-                cThId: "ID",
-                cThName: "Kurs Nomi",
-                cThPrice: "Narxi",
-                cThDuration: "Davomiyligi",
-                cThAction: "Amallar",
-                hNotif: "Bildirishnomalar",
-                pNotifText: "Bildirishnomalar bo'limi tez orada qo'shiladi...",
-                hSettings: "Tizim Sozlamalari",
-                setInterfaceTitle: "🎨 Interfeys va Til",
-                setLangLabel: "Tizim tili (Language):",
-                setThemeLabel: "Mavzu (Theme):",
-                optLight: "Kunduzgi (Light)",
-                optDark: "Tungi (Dark)",
-                setAboutTitle: "ℹ️ Biz haqimizda",
-                aboutContent: `<p><strong>ASILBEK EDU CRM</strong> — O'quv markazlari va ta'lim muassasalari uchun maxsus ishlab chiqilgan boshqaruv tizimi.</p><br><p><strong>Versiya:</strong> 2.5.0 (Pro)</p><p><strong>Asoschisi va Dasturchisi:</strong> Asilbek Komilov</p><p><strong>Manzil:</strong> Farg'ona viloyati, Dang'ara tumani</p><p><strong>Yordam uchun:</strong> support@asilbekedu.uz</p>`
-            },
-            en: {
-                titleLogin: "🔐 System Login",
-                btnLogin: "Login",
-                mStudents: "👥 Students",
-                mGroups: "📋 Groups",
-                mCourses: "📚 Courses",
-                mNotif: "🔔 Notifications",
-                mSettings: "⚙️ Settings",
-                btnLogout: "🚪 Logout",
-                hStudents: "Students",
-                btnArchive: "+ ARCHIVE STUDENT",
-                btnAddStudent: "+ ADD STUDENT",
-                btnRegister: "📋 REGISTER",
-                stTotalTitle: "Total Students",
-                stActiveTitle: "Active Students",
-                stGradTitle: "Graduated",
-                stTeacherTitle: "Teachers",
-                stRegTitle: "Registered",
-                stArchTitle: "Archived Students",
-                thId: "ID",
-                thName: "Full Name",
-                thPhone: "Phone",
-                thGroup: "Group",
-                thAddress: "Address",
-                thAction: "Actions",
-                hGroups: "Groups",
-                btnAddGroup: "+ ADD GROUP",
-                gTotalTitle: "Total Groups",
-                gActiveTitle: "Active Groups",
-                gThId: "ID",
-                gThName: "Group Name",
-                gThCourse: "Course",
-                gThTeacher: "Teacher",
-                gThAction: "Actions",
-                hCourses: "Courses",
-                btnAddCourse: "+ ADD COURSE",
-                cTotalTitle: "Total Courses",
-                cThId: "ID",
-                cThName: "Course Name",
-                cThPrice: "Price",
-                cThDuration: "Duration",
-                cThAction: "Actions",
-                hNotif: "Notifications",
-                pNotifText: "Notifications section coming soon...",
-                hSettings: "System Settings",
-                setInterfaceTitle: "🎨 Interface & Language",
-                setLangLabel: "System Language:",
-                setThemeLabel: "Theme:",
-                optLight: "Light",
-                optDark: "Dark",
-                setAboutTitle: "ℹ️ About Us",
-                aboutContent: `<p><strong>ASILBEK EDU CRM</strong> — Management system specially designed for educational centers.</p><br><p><strong>Version:</strong> 2.5.0 (Pro)</p><p><strong>Founder & Developer:</strong> Asilbek Komilov</p><p><strong>Location:</strong> Fergana region, Dangara district</p><p><strong>Support:</strong> support@asilbekedu.uz</p>`
-            },
-            ru: {
-                titleLogin: "🔐 Вход в систему",
-                btnLogin: "Войти",
-                mStudents: "👥 Ученики",
-                mGroups: "📋 Группы",
-                mCourses: "📚 Курсы",
-                mNotif: "🔔 Уведомления",
-                mSettings: "⚙️ Настройки",
-                btnLogout: "🚪 Выход",
-                hStudents: "Ученики",
-                btnArchive: "+ АРХИВУРИТЬ",
-                btnAddStudent: "+ ДОБАВИТЬ УЧЕНИКА",
-                btnRegister: "📋 РЕГИСТРАЦИЯ",
-                stTotalTitle: "Всего учеников",
-                stActiveTitle: "Учатся сейчас",
-                stGradTitle: "Выпускники",
-                stTeacherTitle: "Преподаватели",
-                stRegTitle: "Зарегистрированные",
-                stArchTitle: "Архивные ученики",
-                thId: "ID",
-                thName: "ФИО",
-                thPhone: "Телефон",
-                thGroup: "Группа",
-                thAddress: "Адрес",
-                thAction: "Действия",
-                hGroups: "Группы",
-                btnAddGroup: "+ ДОБАВИТЬ ГРУППУ",
-                gTotalTitle: "Всего групп",
-                gActiveTitle: "Активные группы",
-                gThId: "ID",
-                gThName: "Название группы",
-                gThCourse: "Курс",
-                gThTeacher: "Преподаватель",
-                gThAction: "Действия",
-                hCourses: "Курсы",
-                btnAddCourse: "+ ДОБАВИТЬ КУРС",
-                cTotalTitle: "Всего курсов",
-                cThId: "ID",
-                cThName: "Название курса",
-                cThPrice: "Цена",
-                cThDuration: "Длительность",
-                cThAction: "Действия",
-                hNotif: "Уведомления",
-                pNotifText: "Раздел уведомлений скоро появится...",
-                hSettings: "Системные Настройки",
-                setInterfaceTitle: "🎨 Интерфейс и Язык",
-                setLangLabel: "Язык системы:",
-                setThemeLabel: "Тема:",
-                optLight: "Светлая (Light)",
-                optDark: "Темная (Dark)",
-                setAboutTitle: "ℹ️ О нас",
-                aboutContent: `<p><strong>ASILBEK EDU CRM</strong> — Система управления, специально разработанная для учебных центров.</p><br><p><strong>Версия:</strong> 2.5.0 (Pro)</p><p><strong>Основатель и разработчик:</strong> Асилбек Комилов</p><p><strong>Адрес:</strong> Ферганская область, Дангаринский район</p><p><strong>Поддержка:</strong> support@asilbekedu.uz</p>`
-            }
-        };
+        // Modallarni ochish va yopish
+        function openStudentModal() { document.getElementById('studentModal').style.display = 'flex'; }
+        function closeStudentModal() { document.getElementById('studentModal').style.display = 'none'; }
+        function openRegisterModal() { document.getElementById('registerModal').style.display = 'flex'; }
+        function closeRegisterModal() { document.getElementById('registerModal').style.display = 'none'; }
+        function openGroupModal() { document.getElementById('groupModal').style.display = 'flex'; }
+        function closeGroupModal() { document.getElementById('groupModal').style.display = 'none'; }
+        function openCourseModal() { document.getElementById('courseModal').style.display = 'flex'; }
+        function closeCourseModal() { document.getElementById('courseModal').style.display = 'none'; }
 
-        window.onload = function() {
-            if (localStorage.getItem('isLoggedIn') === 'true') {
-                showDashboard();
-            }
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.className = 'dark-theme';
-                document.getElementById('themeSelect').value = 'dark';
-            }
-            if (localStorage.getItem('lang')) {
-                const savedLang = localStorage.getItem('lang');
-                document.getElementById('langSelect').value = savedLang;
-                setLanguage(savedLang);
-            }
-        }
-
-        function changeTheme() {
-            const theme = document.getElementById('themeSelect').value;
-            if (theme === 'dark') {
-                document.body.className = 'dark-theme';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.className = 'light-theme';
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        function changeLanguage() {
-            const lang = document.getElementById('langSelect').value;
-            localStorage.setItem('lang', lang);
-            setLanguage(lang);
-        }
-
-        function setLanguage(lang) {
-            const t = translations[lang];
-            if (!t) return;
-
-            document.getElementById('lTextTitle').textContent = t.titleLogin;
-            document.getElementById('lBtnLogin').textContent = t.btnLogin;
-            document.getElementById('mStudents').textContent = t.mStudents;
-            document.getElementById('mGroups').textContent = t.mGroups;
-            document.getElementById('mCourses').textContent = t.mCourses;
-            document.getElementById('mNotif').textContent = t.mNotif;
-            document.getElementById('mSettings').textContent = t.mSettings;
-            document.getElementById('btnLogout').textContent = t.btnLogout;
-            document.getElementById('hStudents').textContent = t.hStudents;
-            document.getElementById('btnArchive').textContent = t.btnArchive;
-            document.getElementById('btnAddStudent').textContent = t.btnAddStudent;
-            document.getElementById('btnRegister').textContent = t.btnRegister;
-            document.getElementById('stTotalTitle').textContent = t.stTotalTitle;
-            document.getElementById('stActiveTitle').textContent = t.stActiveTitle;
-            document.getElementById('stGradTitle').textContent = t.stGradTitle;
-            document.getElementById('stTeacherTitle').textContent = t.stTeacherTitle;
-            document.getElementById('stRegTitle').textContent = t.stRegTitle;
-            document.getElementById('stArchTitle').textContent = t.stArchTitle;
-            document.getElementById('thId').textContent = t.thId;
-            document.getElementById('thName').textContent = t.thName;
-            document.getElementById('thPhone').textContent = t.thPhone;
-            document.getElementById('thGroup').textContent = t.thGroup;
-            document.getElementById('thAddress').textContent = t.thAddress;
-            document.getElementById('thAction').textContent = t.thAction;
-            document.getElementById('hGroups').textContent = t.hGroups;
-            document.getElementById('btnAddGroup').textContent = t.btnAddGroup;
-            document.getElementById('gTotalTitle').textContent = t.gTotalTitle;
-            document.getElementById('gActiveTitle').textContent = t.gActiveTitle;
-            document.getElementById('gThId').textContent = t.gThId;
-            document.getElementById('gThName').textContent = t.gThName;
-            document.getElementById('gThCourse').textContent = t.gThCourse;
-            document.getElementById('gThTeacher').textContent = t.gThTeacher;
-            document.getElementById('gThAction').textContent = t.gThAction;
-            document.getElementById('hCourses').textContent = t.hCourses;
-            document.getElementById('btnAddCourse').textContent = t.btnAddCourse;
-            document.getElementById('cTotalTitle').textContent = t.cTotalTitle;
-            document.getElementById('cThId').textContent = t.cThId;
-            document.getElementById('cThName').textContent = t.cThName;
-            document.getElementById('cThPrice').textContent = t.cThPrice;
-            document.getElementById('cThDuration').textContent = t.cThDuration;
-            document.getElementById('cThAction').textContent = t.cThAction;
-            document.getElementById('hNotif').textContent = t.hNotif;
-            document.getElementById('pNotifText').textContent = t.pNotifText;
-            document.getElementById('hSettings').textContent = t.hSettings;
-            document.getElementById('setInterfaceTitle').textContent = t.setInterfaceTitle;
-            document.getElementById('setLangLabel').textContent = t.setLangLabel;
-            document.getElementById('setThemeLabel').textContent = t.setThemeLabel;
-            document.getElementById('optLight').textContent = t.optLight;
-            document.getElementById('optDark').textContent = t.optDark;
-            document.getElementById('setAboutTitle').textContent = t.setAboutTitle;
-            document.getElementById('aboutTextContent').innerHTML = t.aboutContent;
-        }
-
-        function togglePassword() {
-            const parolInput = document.getElementById('parolInput');
-            const eyeIcon = document.getElementById('eyeIcon');
-            if (parolInput.type === 'password') {
-                parolInput.type = 'text';
-                eyeIcon.textContent = '🙈';
-            } else {
-                parolInput.type = 'password';
-                eyeIcon.textContent = '👁️';
-            }
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const loginVal = document.getElementById('loginInput').value.trim();
-            const parolVal = document.getElementById('parolInput').value.trim();
-            const errorText = document.getElementById('errorText');
-
-            if (loginVal === 'asilbekedu' && parolVal === '1234') {
-                localStorage.setItem('isLoggedIn', 'true');
-                errorText.style.display = 'none';
-                showDashboard();
-            } else {
-                errorText.style.display = 'block';
-            }
-        });
-
-        function showDashboard() {
-            document.getElementById('loginCard').style.display = 'none';
-            document.getElementById('appLayout').style.display = 'flex';
-            loadStudents('all');
-            loadGroups();
-            loadCourses();
-        }
-
-        function logoutSystem() {
-            localStorage.removeItem('isLoggedIn');
-            document.getElementById('appLayout').style.display = 'none';
-            document.getElementById('loginCard').style.display = 'flex';
-            document.getElementById('loginInput').value = '';
-            document.getElementById('parolInput').value = '';
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active-section'));
-            document.querySelectorAll('.menu li').forEach(li => li.classList.remove('active'));
-
-            if (tabName === 'students') {
+        function switchTab(tab) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+            document.querySelectorAll('.menu li').forEach(m => m.classList.remove('active'));
+            if (tab === 'students') {
                 document.getElementById('sectionStudents').classList.add('active-section');
                 document.getElementById('menuStudents').classList.add('active');
-                loadStudents('all');
-            } else if (tabName === 'groups') {
+            } else if (tab === 'groups') {
                 document.getElementById('sectionGroups').classList.add('active-section');
                 document.getElementById('menuGroups').classList.add('active');
-                loadGroups();
-            } else if (tabName === 'courses') {
+            } else if (tab === 'courses') {
                 document.getElementById('sectionCourses').classList.add('active-section');
                 document.getElementById('menuCourses').classList.add('active');
-                loadCourses();
-            } else if (tabName === 'notifications') {
+            } else if (tab === 'notifications') {
                 document.getElementById('sectionNotifications').classList.add('active-section');
                 document.getElementById('menuNotifications').classList.add('active');
-            } else if (tabName === 'settings') {
+            } else if (tab === 'settings') {
                 document.getElementById('sectionSettings').classList.add('active-section');
                 document.getElementById('menuSettings').classList.add('active');
             }
         }
 
-        function openStudentModal() {
-            document.getElementById('studentModal').style.display = 'flex';
-            document.getElementById('fullName').value = '';
-            document.getElementById('birthDate').value = '';
-            document.getElementById('address').value = '';
-            document.getElementById('groupNameInput').value = '';
-            document.getElementById('phone').value = '+998 ';
-            document.getElementById('homePhone').value = '+998 ';
-            document.getElementById('graduation').value = '';
-            document.getElementById('performance').value = '';
-            document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
+        function togglePassword() {
+            const p = document.getElementById('parolInput');
+            p.type = p.type === 'password' ? 'text' : 'password';
         }
-        function closeStudentModal() { document.getElementById('studentModal').style.display = 'none'; }
 
-        function openRegisterModal() {
-            document.getElementById('registerModal').style.display = 'flex';
-            document.getElementById('regFullName').value = '';
-            document.getElementById('regAddress').value = '';
-            document.getElementById('regPhone').value = '+998 ';
-            document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
+        // Helper: Tugmaga Loading effekti qo'shish
+        async function handleFormSubmit(btnId, loadingText, asyncFn) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return await asyncFn();
+            const originalText = btn.innerHTML;
+            btn.innerHTML = loadingText;
+            btn.disabled = true;
+            try {
+                await asyncFn();
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
-        function closeRegisterModal() { document.getElementById('registerModal').style.display = 'none'; }
 
-        function openGroupModal() {
-            document.getElementById('groupModal').style.display = 'flex';
-            document.getElementById('groupName').value = '';
-            document.getElementById('courseName').value = '';
-            document.getElementById('teacherName').value = '';
+        // Login Formasi
+        document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await handleFormSubmit('lBtnLogin', 'Kirilmoqda...', async () => {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('appLayout').style.display = 'flex';
+                loadStudents();
+            });
+        });
+
+        function logoutSystem() {
+            document.getElementById('appLayout').style.display = 'none';
+            document.getElementById('loginCard').style.display = 'flex';
         }
-        function closeGroupModal() { document.getElementById('groupModal').style.display = 'none'; }
 
-        function openCourseModal() {
-            document.getElementById('courseModal').style.display = 'flex';
-            document.getElementById('newCourseName').value = '';
-            document.getElementById('newCoursePrice').value = '';
-            document.getElementById('newCourseDuration').value = '';
-        }
-        function closeCourseModal() { document.getElementById('courseModal').style.display = 'none'; }
-
-        document.getElementById('fullName').addEventListener('input', function() {
-            let cleanVal = this.value.replace(/[0-9]/g, '');
-            let words = cleanVal.split(' ');
-            this.value = words.map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : '').join(' ');
-        });
-
-        document.getElementById('regFullName').addEventListener('input', function() {
-            let cleanVal = this.value.replace(/[0-9]/g, '');
-            let words = cleanVal.split(' ');
-            this.value = words.map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : '').join(' ');
-        });
-
-        const phoneInput = document.getElementById('phone');
-        phoneInput.addEventListener('focus', function() { if (!this.value.startsWith('+998 ')) this.value = '+998 '; });
-        phoneInput.addEventListener('input', function() {
-            let num = this.value.slice(5).replace(/\D/g, '').slice(0, 9);
-            this.value = '+998 ' + num;
-        });
-
-        const regPhoneInput = document.getElementById('regPhone');
-        regPhoneInput.addEventListener('focus', function() { if (!this.value.startsWith('+998 ')) this.value = '+998 '; });
-        regPhoneInput.addEventListener('input', function() {
-            let num = this.value.slice(5).replace(/\D/g, '').slice(0, 9);
-            this.value = '+998 ' + num;
-        });
-
-        const homePhoneInput = document.getElementById('homePhone');
-        homePhoneInput.addEventListener('focus', function() { if (!this.value.startsWith('+998 ')) this.value = '+998 '; });
-        homePhoneInput.addEventListener('input', function() {
-            let num = this.value.slice(5).replace(/\D/g, '').slice(0, 9);
-            this.value = '+998 ' + num;
-        });
-
+        // O'quvchilar ro'yxatini yuklash
         async function loadStudents(filter = 'all') {
             currentFilter = filter;
             try {
-                const response = await fetch(`${API_URL}/api/students`);
-                const students = await response.json();
-
-                const total = students.length;
-                const active = students.filter(s => s.status === 'active').length;
-                const graduated = students.filter(s => s.status === 'graduated').length;
-                const registered = students.filter(s => s.status === 'registered').length;
-                const archived = students.filter(s => s.status === 'archived').length;
-
-                document.getElementById('statTotal').textContent = `${total} ta`;
-                document.getElementById('statActive').textContent = `${active} ta`;
-                document.getElementById('statGraduated').textContent = `${graduated} ta`;
-                document.getElementById('statRegistered').textContent = `${registered} ta`;
-                document.getElementById('statArchived').textContent = `${archived} ta`;
-
-                document.getElementById('labelTotal').textContent = `${total} ta o'quvchi`;
-                document.getElementById('labelActive').textContent = `${active} ta o'quvchi`;
-                document.getElementById('labelGraduated').textContent = `${graduated} ta o'quvchi`;
-                document.getElementById('labelRegistered').textContent = `${registered} ta o'quvchi`;
-                document.getElementById('labelArchived').textContent = `${archived} ta o'quvchi`;
-
-                document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active-filter'));
-                if (filter === 'all') document.getElementById('cardTotal').classList.add('active-filter');
-                if (filter === 'active') document.getElementById('cardActive').classList.add('active-filter');
-                if (filter === 'graduated') document.getElementById('cardGraduated').classList.add('active-filter');
-                if (filter === 'registered') document.getElementById('cardRegistered').classList.add('active-filter');
-                if (filter === 'archived') document.getElementById('cardArchived').classList.add('active-filter');
-
-                let filtered = students;
-                if (filter !== 'all') {
-                    filtered = students.filter(s => s.status === filter);
-                }
-
-                const tbody = document.getElementById('studentTableBody');
-                tbody.innerHTML = '';
-
-                if (filtered.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 30px;">Bu bo\'limda o\'quvchilar mavjud emas.</td></tr>';
-                    return;
-                }
-
-                filtered.forEach(s => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>#${s.id}</td>
-                        <td><strong>${s.full_name}</strong></td>
-                        <td>${s.phone || 'Kiritilmagan'}</td>
-                        <td>${s.group_name || 'Biriktirilmagan'}</td>
-                        <td>${s.address || 'Kiritilmagan'}</td>
-                        <td style="text-align: right;">
-                            <button class="btn-delete-table" onclick="deleteStudent(${s.id})">O'chirish</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (error) {
-                console.error("Xatolik:", error);
+                const res = await fetch(`${API_URL}/api/students`);
+                if (!res.ok) return;
+                const students = await res.json();
+                renderStudents(students);
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        document.getElementById('studentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            let isValid = true;
+        function renderStudents(students) {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = '';
 
-            const full_name = document.getElementById('fullName').value.trim();
-            const birth_date = document.getElementById('birthDate').value.trim();
-            const address = document.getElementById('address').value.trim();
-            const group_name = document.getElementById('groupNameInput').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const home_phone = document.getElementById('homePhone').value.trim();
-            const graduation = document.getElementById('graduation').value.trim();
-            const performance = document.getElementById('performance').value.trim();
-            const status = document.getElementById('studentStatus').value;
+            let filtered = students;
+            if (currentFilter !== 'all') {
+                filtered = students.filter(s => s.status === currentFilter);
+            }
 
-            document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
-
-            if (!full_name) { document.getElementById('errFullName').style.display = 'block'; isValid = false; }
-            if (!birth_date) { document.getElementById('errBirthDate').style.display = 'block'; isValid = false; }
-            if (!address) { document.getElementById('errAddress').style.display = 'block'; isValid = false; }
-            if (!group_name) { document.getElementById('errGroup').style.display = 'block'; isValid = false; }
-            if (phone.slice(5).replace(/\D/g, '').length !== 9) { document.getElementById('errPhone').style.display = 'block'; isValid = false; }
-            if (home_phone && home_phone.slice(5).replace(/\D/g, '').length !== 9) { document.getElementById('errHomePhone').style.display = 'block'; isValid = false; }
-            if (!graduation) { document.getElementById('errGraduation').style.display = 'block'; isValid = false; }
-            if (!performance) { document.getElementById('errPerformance').style.display = 'block'; isValid = false; }
-
-            if (!isValid) return;
-
-            const response = await fetch(`${API_URL}/api/students`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ full_name, birth_date, address, group_name, phone, home_phone, graduation, performance, status })
+            filtered.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.id = `student-row-${s.id}`;
+                tr.innerHTML = `
+                    <td>${s.id || '-'}</td>
+                    <td>${s.full_name || s.name || '-'}</td>
+                    <td>${s.phone || '-'}</td>
+                    <td>${s.group_name || s.group || '-'}</td>
+                    <td>${s.address || '-'}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-delete-table" onclick="deleteStudent('${s.id}')">O'chirish</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
 
-            if (response.ok) {
-                closeStudentModal();
-                loadStudents(currentFilter);
-            } else {
-                alert("Xatolik yuz berdi!");
-            }
-        });
+            // Statistika hisoblari
+            document.getElementById('statTotal').innerText = `${students.length} ta`;
+            document.getElementById('labelTotal').innerText = `${students.length} ta o'quvchi`;
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            let isValid = true;
+            const activeCount = students.filter(s => s.status === 'active').length;
+            document.getElementById('statActive').innerText = `${activeCount} ta`;
+            document.getElementById('labelActive').innerText = `${activeCount} ta o'quvchi`;
 
-            const full_name = document.getElementById('regFullName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const address = document.getElementById('regAddress').value.trim();
-            let phoneNumbers = phone.slice(5).replace(/\D/g, '');
+            const gradCount = students.filter(s => s.status === 'graduated').length;
+            document.getElementById('statGraduated').innerText = `${gradCount} ta`;
+            document.getElementById('labelGraduated').innerText = `${gradCount} ta o'quvchi`;
 
-            document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
+            const regCount = students.filter(s => s.status === 'registered').length;
+            document.getElementById('statRegistered').innerText = `${regCount} ta`;
+            document.getElementById('labelRegistered').innerText = `${regCount} ta o'quvchi`;
 
-            if (!full_name) { document.getElementById('errRegName').style.display = 'block'; isValid = false; }
-            if (phoneNumbers.length !== 9) { document.getElementById('errRegPhone').style.display = 'block'; isValid = false; }
-            if (!address) { document.getElementById('errRegAddress').style.display = 'block'; isValid = false; }
+            const archCount = students.filter(s => s.status === 'archived').length;
+            document.getElementById('statArchived').innerText = `${archCount} ta`;
+            document.getElementById('labelArchived').innerText = `${archCount} ta o'quvchi`;
+        }
 
-            if (!isValid) return;
-
-            const response = await fetch(`${API_URL}/api/students`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ full_name, phone, address, status: 'registered' })
-            });
-
-            if (response.ok) {
-                closeRegisterModal();
-                loadStudents(currentFilter);
-            } else {
-                alert("Xatolik yuz berdi!");
-            }
-        });
-
+        // Fast Delete (Optimistic UI)
         async function deleteStudent(id) {
-            if (confirm("Haqiqatdan ham ushbu o'quvchini o'chirmoqchimisiz?")) {
-                const response = await fetch(`${API_URL}/api/students/${id}`, { method: 'DELETE' });
-                if (response.ok) loadStudents(currentFilter);
-                else alert("O'chirishda xatolik bo'ldi!");
-            }
-        }
+            if (!confirm("Haqiqatan ham bu o'quvchini o'chirmoqchimisiz?")) return;
 
-        async function loadGroups() {
+            const row = document.getElementById(`student-row-${id}`);
+            if (row) row.remove(); // Darhol ekrandan o'chadi
+
             try {
-                const response = await fetch(`${API_URL}/api/groups`);
-                const groups = await response.json();
-
-                const tbody = document.getElementById('groupTableBody');
-                tbody.innerHTML = '';
-
-                const groupList = document.getElementById('groupList');
-                groupList.innerHTML = '';
-
-                document.getElementById('statGroupTotal').textContent = `${groups.length} ta`;
-                document.getElementById('statGroupActive').textContent = `${groups.length} ta`;
-
-                if (groups.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 30px;">Hozircha guruhlar mavjud emas.</td></tr>';
-                    return;
-                }
-
-                groups.forEach(g => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>#${g.id}</td>
-                        <td><strong>${g.group_name}</strong></td>
-                        <td>${g.course_name}</td>
-                        <td>${g.teacher_name}</td>
-                        <td style="text-align: right;">
-                            <button class="btn-delete-table" onclick="deleteGroup(${g.id})">O'chirish</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-
-                    const option = document.createElement('option');
-                    option.value = g.group_name;
-                    groupList.appendChild(option);
-                });
-            } catch (error) {
-                console.error("Xatolik:", error);
+                const res = await fetch(`${API_URL}/api/students/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error("Serverda o'chirishda xatolik");
+            } catch (err) {
+                alert("O'chirishda xatolik bo'ldi. Qayta yuklanmoqda...");
+                loadStudents(currentFilter);
             }
         }
 
-        document.getElementById('groupForm').addEventListener('submit', async (e) => {
+        // Ro'yxatga olish Formasi
+        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const group_name = document.getElementById('groupName').value.trim();
-            const course_name = document.getElementById('courseName').value.trim();
-            const teacher_name = document.getElementById('teacherName').value.trim();
+            await handleFormSubmit('btnSubmitReg', 'Saqlanmoqda...', async () => {
+                const name = document.getElementById('regFullName').value;
+                const phone = document.getElementById('regPhone').value;
+                const address = document.getElementById('regAddress').value;
 
-            if (!group_name || !course_name || !teacher_name) {
-                alert("Iltimos, barcha maydonlarni to'ldiring!");
-                return;
-            }
-
-            const response = await fetch(`${API_URL}/api/groups`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ group_name, course_name, teacher_name })
+                try {
+                    const res = await fetch(`${API_URL}/api/students`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            full_name: name,
+                            phone: phone,
+                            address: address,
+                            status: 'registered'
+                        })
+                    });
+                    if (res.ok) {
+                        closeRegisterModal();
+                        document.getElementById('registerForm').reset();
+                        loadStudents(currentFilter);
+                    } else {
+                        alert("Saqlashda xatolik yuz berdi!");
+                    }
+                } catch (err) {
+                    alert("Server bilan ulanishda xatolik!");
+                }
             });
-
-            if (response.ok) {
-                closeGroupModal();
-                loadGroups();
-            } else {
-                alert("Xatolik yuz berdi!");
-            }
         });
 
-        async function deleteGroup(id) {
-            if (confirm("Haqiqatdan ham ushbu guruhni o'chirmoqchimisiz?")) {
-                const response = await fetch(`${API_URL}/api/groups/${id}`, { method: 'DELETE' });
-                if (response.ok) loadGroups();
-                else alert("O'chirishda xatolik bo'ldi!");
-            }
-        }
-
-        async function loadCourses() {
-            try {
-                const response = await fetch(`${API_URL}/api/courses`);
-                const courses = await response.json();
-
-                const tbody = document.getElementById('courseTableBody');
-                tbody.innerHTML = '';
-
-                const courseList = document.getElementById('courseList');
-                courseList.innerHTML = '';
-
-                document.getElementById('statCourseTotal').textContent = `${courses.length} ta`;
-
-                if (courses.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 30px;">Hozircha kurslar mavjud emas.</td></tr>';
-                    return;
-                }
-
-                courses.forEach(c => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>#${c.id}</td>
-                        <td><strong>${c.course_name}</strong></td>
-                        <td>${c.price}</td>
-                        <td>${c.duration}</td>
-                        <td style="text-align: right;">
-                            <button class="btn-delete-table" onclick="deleteCourse(${c.id})">O'chirish</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-
-                    const option = document.createElement('option');
-                    option.value = c.course_name;
-                    courseList.appendChild(option);
-                });
-            } catch (error) {
-                console.error("Xatolik:", error);
-            }
-        }
-
-        document.getElementById('courseForm').addEventListener('submit', async (e) => {
+        // O'quvchi Qo'shish Formasi
+        document.getElementById('studentForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const course_name = document.getElementById('newCourseName').value.trim();
-            const price = document.getElementById('newCoursePrice').value.trim();
-            const duration = document.getElementById('newCourseDuration').value.trim();
+            await handleFormSubmit('btnAdd1', 'Saqlanmoqda...', async () => {
+                const name = document.getElementById('fullName').value;
+                const birthDate = document.getElementById('birthDate').value;
+                const address = document.getElementById('address').value;
+                const group = document.getElementById('groupNameInput').value;
+                const phone = document.getElementById('phone').value;
+                const homePhone = document.getElementById('homePhone').value;
+                const graduation = document.getElementById('graduation').value;
+                const status = document.getElementById('studentStatus').value;
+                const performance = document.getElementById('performance').value;
 
-            if (!course_name || !price || !duration) {
-                alert("Iltimos, barcha maydonlarni to'ldiring!");
-                return;
-            }
-
-            const response = await fetch(`${API_URL}/api/courses`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ course_name, price, duration })
+                try {
+                    const res = await fetch(`${API_URL}/api/students`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            full_name: name,
+                            birth_date: birthDate,
+                            address: address,
+                            group_name: group,
+                            phone: phone,
+                            home_phone: homePhone,
+                            graduation: graduation,
+                            status: status,
+                            performance: performance
+                        })
+                    });
+                    if (res.ok) {
+                        closeStudentModal();
+                        document.getElementById('studentForm').reset();
+                        loadStudents(currentFilter);
+                    } else {
+                        alert("Saqlashda xatolik yuz berdi!");
+                    }
+                } catch (err) {
+                    alert("Server bilan ulanishda xatolik!");
+                }
             });
-
-            if (response.ok) {
-                closeCourseModal();
-                loadCourses();
-            } else {
-                alert("Xatolik yuz berdi!");
-            }
         });
 
-        async function deleteCourse(id) {
-            if (confirm("Haqiqatdan ham ushbu kursni o'chirmoqchimisiz?")) {
-                const response = await fetch(`${API_URL}/api/courses/${id}`, { method: 'DELETE' });
-                if (response.ok) loadCourses();
-                else alert("O'chirishda xatolik bo'ldi!");
-            }
+        // Guruh Qo'shish Formasi
+        document.getElementById('groupForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await handleFormSubmit('btnSaveGroup', 'Saqlanmoqda...', async () => {
+                const name = document.getElementById('groupName').value;
+                const course = document.getElementById('courseName').value;
+                const teacher = document.getElementById('teacherName').value;
+
+                try {
+                    const res = await fetch(`${API_URL}/api/groups`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, course, teacher })
+                    });
+                    if (res.ok) {
+                        closeGroupModal();
+                        document.getElementById('groupForm').reset();
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        });
+
+        // Kurs Qo'shish Formasi
+        document.getElementById('courseForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await handleFormSubmit('btnSaveCourse', 'Saqlanmoqda...', async () => {
+                const name = document.getElementById('newCourseName').value;
+                const price = document.getElementById('newCoursePrice').value;
+                const duration = document.getElementById('newCourseDuration').value;
+
+                try {
+                    const res = await fetch(`${API_URL}/api/courses`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, price, duration })
+                    });
+                    if (res.ok) {
+                        closeCourseModal();
+                        document.getElementById('courseForm').reset();
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        });
+
+        function changeTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            document.body.className = theme === 'dark' ? 'dark-theme' : 'light-theme';
+        }
+
+        function changeLanguage() {
+            // Tilni almashtirish logikasi
         }
     </script>
 </body>
