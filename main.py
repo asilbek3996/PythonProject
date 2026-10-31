@@ -10,7 +10,7 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-# DATABASE_URL = "postgresql://postgres:Asilxan1968.@db.gzmrwexzjcgniadmvzfz.supabase.co:5432/postgres"
+# Supabase ulanish havolasi
 DATABASE_URL = "postgresql://postgres.gzmrwexzjcgniadmvzfz:Asilxan1968.@aws-0-ap-northeast-2.pooler.supabase.com:6543/postgres"
 
 
@@ -24,13 +24,10 @@ def init_db():
         conn = get_db()
         cursor = conn.cursor()
 
-        # Eski jadvallarni yangilash uchun tozalab boshtatan yaratamiz
-        cursor.execute("DROP TABLE IF EXISTS students CASCADE;")
-        cursor.execute("DROP TABLE IF EXISTS groups CASCADE;")
-        cursor.execute("DROP TABLE IF EXISTS courses CASCADE;")
-
+        # DROP TABLE olib tashlandi! Endi ma'lumotlar o'chib ketmaydi.
+        # Jadval yo'q bo'lsagina yangidan yaratiladi.
         cursor.execute("""
-            CREATE TABLE students (
+            CREATE TABLE IF NOT EXISTS students (
                 id SERIAL PRIMARY KEY,
                 full_name TEXT NOT NULL,
                 birth_date TEXT,
@@ -45,7 +42,7 @@ def init_db():
         """)
 
         cursor.execute("""
-            CREATE TABLE groups (
+            CREATE TABLE IF NOT EXISTS groups (
                 id SERIAL PRIMARY KEY,
                 group_name TEXT NOT NULL,
                 course_name TEXT NOT NULL,
@@ -54,7 +51,7 @@ def init_db():
         """)
 
         cursor.execute("""
-            CREATE TABLE courses (
+            CREATE TABLE IF NOT EXISTS courses (
                 id SERIAL PRIMARY KEY,
                 course_name TEXT NOT NULL,
                 price TEXT NOT NULL,
@@ -65,7 +62,7 @@ def init_db():
         conn.commit()
         cursor.close()
         conn.close()
-        print("Supabase bazasi muvaffaqiyatli yangilandi va jadvallar yaratildi!")
+        print("Supabase bazasi muvaffaqiyatli tekshirildi va jadvallar tayyor!")
     except Exception as e:
         print("Bazaga ulanishda xatolik:", e)
 
@@ -134,6 +131,29 @@ def add_student(student: Student):
         return {"status": "success"}
     except Exception as e:
         print("O'quvchi qo'shishda xatolik:", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/students/{student_id}")
+def update_student(student_id: int, student: Student):
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE students 
+            SET full_name = %s, birth_date = %s, address = %s, group_name = %s, 
+                phone = %s, home_phone = %s, graduation = %s, performance = %s, status = %s
+            WHERE id = %s
+        """, (
+            student.full_name, student.birth_date, student.address, student.group_name,
+            student.phone, student.home_phone, student.graduation, student.performance, student.status, student_id
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"status": "updated"}
+    except Exception as e:
+        print("O'quvchini tahrirlashda xatolik:", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 

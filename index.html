@@ -68,6 +68,9 @@
         th { background: var(--card-bg); padding: 14px 20px; color: #64748b; font-weight: 600; border-bottom: 1px solid var(--border-color); }
         td { padding: 14px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-color); }
         tr:last-child td { border-bottom: none; }
+
+        .btn-edit-table { background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-right: 5px; transition: 0.2s; }
+        .btn-edit-table:hover { background: #0284c7; color: white; }
         .btn-delete-table { background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
         .btn-delete-table:hover { background: #ef4444; color: white; }
 
@@ -76,7 +79,6 @@
         .settings-card h3 { font-size: 18px; color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .settings-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-color); }
         .settings-row select { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); outline: none; }
-        .about-text { font-size: 14px; line-height: 1.6; color: #64748b; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); color: var(--text-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
@@ -90,8 +92,6 @@
         .modal-form input, .modal-form select { padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; width: 100%; background: var(--card-bg); color: var(--text-color); }
         .modal-form input:focus, .modal-form select:focus { border-color: #2563eb; }
 
-        .error-text { color: #ef4444; font-size: 12px; display: none; }
-
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
         .btn-cancel { background: var(--border-color); color: var(--text-color); border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; }
 
@@ -104,7 +104,7 @@
     <!-- 1. LOGIN OYNASI -->
     <div id="loginCard" class="login-wrapper">
         <div class="login-card">
-            <h2 id="lTextTitle">🔐 Tizimga Kirish</h2>
+            <h2>🔐 Tizimga Kirish</h2>
             <form id="loginForm">
                 <input type="text" id="loginInput" placeholder="Loginni kiriting" required>
                 <div class="password-container">
@@ -130,14 +130,14 @@
                 </div>
 
                 <ul class="menu">
-                    <li id="menuStudents" class="active" onclick="switchTab('students')"><a href="#" id="mStudents">👥 O'quvchilar</a></li>
-                    <li id="menuGroups" onclick="switchTab('groups')"><a href="#" id="mGroups">📋 Guruhlar</a></li>
-                    <li id="menuCourses" onclick="switchTab('courses')"><a href="#" id="mCourses">📚 Kurslar</a></li>
-                    <li id="menuNotifications" onclick="switchTab('notifications')"><a href="#" id="mNotif">🔔 Bildirishnomalar</a></li>
-                    <li id="menuSettings" onclick="switchTab('settings')"><a href="#" id="mSettings">⚙️ Sozlamalar</a></li>
+                    <li id="menuStudents" class="active" onclick="switchTab('students')"><a href="#">👥 O'quvchilar</a></li>
+                    <li id="menuGroups" onclick="switchTab('groups')"><a href="#">📋 Guruhlar</a></li>
+                    <li id="menuCourses" onclick="switchTab('courses')"><a href="#">📚 Kurslar</a></li>
+                    <li id="menuNotifications" onclick="switchTab('notifications')"><a href="#">🔔 Bildirishnomalar</a></li>
+                    <li id="menuSettings" onclick="switchTab('settings')"><a href="#">⚙️ Sozlamalar</a></li>
                 </ul>
             </div>
-            <button class="btn-logout-side" onclick="logoutSystem()" id="btnLogout">🚪 Chiqish</button>
+            <button class="btn-logout-side" onclick="logoutSystem()">🚪 Chiqish</button>
         </div>
 
         <div class="main-content">
@@ -145,79 +145,38 @@
             <!-- A) O'QUVCHILAR BO'LIMI -->
             <div id="sectionStudents" class="content-section active-section">
                 <div class="top-header">
-                    <h1 id="hStudents">O'quvchilar</h1>
+                    <h1>O'quvchilar</h1>
                     <div class="header-actions">
-                        <button class="btn-action btn-secondary" id="btnArchive">+ O'QUVCHINI ARXIVLASH</button>
-                        <button class="btn-action" onclick="openStudentModal()" id="btnAddStudent">+ O'QUVCHI QO'SHISH</button>
-                        <button class="btn-action btn-secondary" onclick="openRegisterModal()" id="btnRegister">📋 RO'YXATGA OLISH</button>
+                        <button class="btn-action btn-secondary">+ O'QUVCHINI ARXIVLASH</button>
+                        <button class="btn-action" onclick="openAddStudentModal()">+ O'QUVCHI QO'SHISH</button>
+                        <button class="btn-action btn-secondary" onclick="openRegisterModal()">📋 RO'YXATGA OLISH</button>
                     </div>
                 </div>
 
                 <div class="stats-grid">
                     <div class="stat-card" id="cardTotal" onclick="loadStudents('all')">
-                        <div class="card-top">
-                            <div class="title" id="stTotalTitle">Jami o'quvchilar</div>
-                            <span>👥</span>
-                        </div>
-                        <div>
-                            <div class="value" id="statTotal">0 ta</div>
-                            <div class="count-label" id="labelTotal">0 ta o'quvchi</div>
-                        </div>
+                        <div class="card-top"><div class="title">Jami o'quvchilar</div><span>👥</span></div>
+                        <div><div class="value" id="statTotal">0 ta</div><div class="count-label" id="labelTotal">0 ta o'quvchi</div></div>
                     </div>
-
                     <div class="stat-card" id="cardActive" onclick="loadStudents('active')">
-                        <div class="card-top">
-                            <div class="title" id="stActiveTitle">Hozir o'qiyotganlar</div>
-                            <span>⚡</span>
-                        </div>
-                        <div>
-                            <div class="value" id="statActive">0 ta</div>
-                            <div class="count-label" id="labelActive">0 ta o'quvchi</div>
-                        </div>
+                        <div class="card-top"><div class="title">Hozir o'qiyotganlar</div><span>⚡</span></div>
+                        <div><div class="value" id="statActive">0 ta</div><div class="count-label" id="labelActive">0 ta o'quvchi</div></div>
                     </div>
-
                     <div class="stat-card" id="cardGraduated" onclick="loadStudents('graduated')">
-                        <div class="card-top">
-                            <div class="title" id="stGradTitle">Bitirganlar</div>
-                            <span>🎓</span>
-                        </div>
-                        <div>
-                            <div class="value" id="statGraduated">0 ta</div>
-                            <div class="count-label" id="labelGraduated">0 ta o'quvchi</div>
-                        </div>
+                        <div class="card-top"><div class="title">Bitirganlar</div><span>🎓</span></div>
+                        <div><div class="value" id="statGraduated">0 ta</div><div class="count-label" id="labelGraduated">0 ta o'quvchi</div></div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="card-top">
-                            <div class="title" id="stTeacherTitle">Ustozlar</div>
-                            <span>👨‍🏫</span>
-                        </div>
-                        <div>
-                            <div class="value">4 ta</div>
-                            <div class="count-label" id="stTeacherSub">4 nafar ustoz</div>
-                        </div>
+                        <div class="card-top"><div class="title">Ustozlar</div><span>👨‍🏫</span></div>
+                        <div><div class="value">4 ta</div><div class="count-label">4 nafar ustoz</div></div>
                     </div>
-
                     <div class="stat-card" id="cardRegistered" onclick="loadStudents('registered')">
-                        <div class="card-top">
-                            <div class="title" id="stRegTitle">Ro'yxatga olinganlar</div>
-                            <span>📝</span>
-                        </div>
-                        <div>
-                            <div class="value" id="statRegistered">0 ta</div>
-                            <div class="count-label" id="labelRegistered">0 ta o'quvchi</div>
-                        </div>
+                        <div class="card-top"><div class="title">Ro'yxatga olinganlar</div><span>📝</span></div>
+                        <div><div class="value" id="statRegistered">0 ta</div><div class="count-label" id="labelRegistered">0 ta o'quvchi</div></div>
                     </div>
-
                     <div class="stat-card" id="cardArchived" onclick="loadStudents('archived')">
-                        <div class="card-top">
-                            <div class="title" id="stArchTitle">Arxivlangan o'quvchilar</div>
-                            <span>📦</span>
-                        </div>
-                        <div>
-                            <div class="value" id="statArchived">0 ta</div>
-                            <div class="count-label" id="labelArchived">0 ta o'quvchi</div>
-                        </div>
+                        <div class="card-top"><div class="title">Arxivlangan o'quvchilar</div><span>📦</span></div>
+                        <div><div class="value" id="statArchived">0 ta</div><div class="count-label" id="labelArchived">0 ta o'quvchi</div></div>
                     </div>
                 </div>
 
@@ -225,12 +184,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th id="thId">ID</th>
-                                <th id="thName">Ism Familiya</th>
-                                <th id="thPhone">Telefon raqami</th>
-                                <th id="thGroup">Guruhi</th>
-                                <th id="thAddress">Manzil</th>
-                                <th style="text-align: right;" id="thAction">Amallar</th>
+                                <th>ID</th>
+                                <th>Ism Familiya</th>
+                                <th>Telefon raqami</th>
+                                <th>Guruhi</th>
+                                <th>Manzil</th>
+                                <th style="text-align: right;">Amallar</th>
                             </tr>
                         </thead>
                         <tbody id="studentTableBody"></tbody>
@@ -241,34 +200,20 @@
             <!-- B) GURUHLAR BO'LIMI -->
             <div id="sectionGroups" class="content-section">
                 <div class="top-header">
-                    <h1 id="hGroups">Guruhlar</h1>
+                    <h1>Guruhlar</h1>
                     <div class="header-actions">
-                        <button class="btn-action" onclick="openGroupModal()" id="btnAddGroup">+ GURUH QO'SHISH</button>
+                        <button class="btn-action" onclick="openGroupModal()">+ GURUH QO'SHISH</button>
                     </div>
                 </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="title" id="gTotalTitle">Jami guruhlar</div>
-                        <div class="value" id="statGroupTotal">0 ta</div>
-                        <div class="count-label" id="gTotalSub">Jami guruhlar</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="title" id="gActiveTitle">Faol guruhlar</div>
-                        <div class="value" id="statGroupActive">0 ta</div>
-                        <div class="count-label" id="gActiveSub">Faol guruhlar</div>
-                    </div>
-                </div>
-
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th id="gThId">ID</th>
-                                <th id="gThName">Guruh Nomi</th>
-                                <th id="gThCourse">Kurs Yo'nalishi</th>
-                                <th id="gThTeacher">O'qituvchi</th>
-                                <th style="text-align: right;" id="gThAction">Amallar</th>
+                                <th>ID</th>
+                                <th>Guruh Nomi</th>
+                                <th>Kurs Yo'nalishi</th>
+                                <th>O'qituvchi</th>
+                                <th style="text-align: right;">Amallar</th>
                             </tr>
                         </thead>
                         <tbody id="groupTableBody"></tbody>
@@ -279,29 +224,20 @@
             <!-- C) KURSLAR BO'LIMI -->
             <div id="sectionCourses" class="content-section">
                 <div class="top-header">
-                    <h1 id="hCourses">Kurslar</h1>
+                    <h1>Kurslar</h1>
                     <div class="header-actions">
-                        <button class="btn-action" onclick="openCourseModal()" id="btnAddCourse">+ KURS QO'SHISH</button>
+                        <button class="btn-action" onclick="openCourseModal()">+ KURS QO'SHISH</button>
                     </div>
                 </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="title" id="cTotalTitle">Jami kurslar</div>
-                        <div class="value" id="statCourseTotal">0 ta</div>
-                        <div class="count-label" id="cTotalSub">Jami kurslar yo'nalishi</div>
-                    </div>
-                </div>
-
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th id="cThId">ID</th>
-                                <th id="cThName">Kurs Nomi</th>
-                                <th id="cThPrice">Narxi</th>
-                                <th id="cThDuration">Davomiyligi</th>
-                                <th style="text-align: right;" id="cThAction">Amallar</th>
+                                <th>ID</th>
+                                <th>Kurs Nomi</th>
+                                <th>Narxi</th>
+                                <th>Davomiyligi</th>
+                                <th style="text-align: right;">Amallar</th>
                             </tr>
                         </thead>
                         <tbody id="courseTableBody"></tbody>
@@ -309,49 +245,24 @@
                 </div>
             </div>
 
-            <!-- D) BILDIRISHNOMALAR BO'LIMI -->
+            <!-- D) BILDIRISHNOMALAR -->
             <div id="sectionNotifications" class="content-section">
-                <div class="top-header">
-                    <h1 id="hNotif">Bildirishnomalar</h1>
-                </div>
-                <p style="color: #64748b; font-size: 15px;" id="pNotifText">Bildirishnomalar bo'limi tez orada qo'shiladi...</p>
+                <div class="top-header"><h1>Bildirishnomalar</h1></div>
+                <p style="color: #64748b;">Bildirishnomalar bo'limi tez orada qo'shiladi...</p>
             </div>
 
-            <!-- E) SOZLAMALAR BO'LIMI -->
+            <!-- E) SOZLAMALAR -->
             <div id="sectionSettings" class="content-section">
-                <div class="top-header">
-                    <h1 id="hSettings">Tizim Sozlamalari</h1>
-                </div>
-
+                <div class="top-header"><h1>Tizim Sozlamalari</h1></div>
                 <div class="settings-grid">
                     <div class="settings-card">
-                        <h3 id="setInterfaceTitle">🎨 Interfeys va Til</h3>
+                        <h3>🎨 Interfeys va Til</h3>
                         <div class="settings-row">
-                            <span id="setLangLabel">Tizim tili (Language):</span>
-                            <select id="langSelect" onchange="changeLanguage()">
-                                <option value="uz">O'zbekcha</option>
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                            </select>
-                        </div>
-                        <div class="settings-row">
-                            <span id="setThemeLabel">Mavzu (Theme):</span>
+                            <span>Mavzu (Theme):</span>
                             <select id="themeSelect" onchange="changeTheme()">
-                                <option value="light" id="optLight">Kunduzgi (Light)</option>
-                                <option value="dark" id="optDark">Tungi (Dark)</option>
+                                <option value="light">Kunduzgi (Light)</option>
+                                <option value="dark">Tungi (Dark)</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <div class="settings-card">
-                        <h3 id="setAboutTitle">ℹ️ Biz haqimizda</h3>
-                        <div class="about-text" id="aboutTextContent">
-                            <p><strong>ASILBEK EDU CRM</strong> — O'quv markazlari va ta'lim muassasalari uchun maxsus ishlab chiqilgan boshqaruv tizimi.</p>
-                            <br>
-                            <p><strong>Versiya:</strong> 2.5.0 (Pro)</p>
-                            <p><strong>Asoschisi va Dasturchisi:</strong> Asilbek Komilov</p>
-                            <p><strong>Manzil:</strong> Farg'ona viloyati, Dang'ara tumani</p>
-                            <p><strong>Yordam uchun:</strong> support@asilbekedu.uz</p>
                         </div>
                     </div>
                 </div>
@@ -360,7 +271,7 @@
         </div>
     </div>
 
-    <!-- Modallar -->
+    <!-- O'QUVCHI QO'SHISH / TAHRIRLASH MODALI -->
     <div id="studentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -368,52 +279,30 @@
                 <span class="close-btn" onclick="closeStudentModal()">&times;</span>
             </div>
             <form id="studentForm" class="modal-form">
+                <input type="hidden" id="editingStudentId">
+                <div class="input-group"><input type="text" id="fullName" placeholder="Ism familiya:" required></div>
+                <div class="input-group"><input type="date" id="birthDate"></div>
                 <div class="input-group">
-                    <input type="text" id="fullName" placeholder="Ism familiya:">
-                    <span id="errFullName" class="error-text">Iltimos, ism familiyani kiriting!</span>
+                    <input type="text" id="address" list="mfyList" placeholder="Manzil:" required>
+                    <datalist id="mfyList">
+                        <option value="Uvaysiy MFY"><option value="Navbahor MFY"><option value="Mulkobod MFY"><option value="Gʻumoyli MFY"><option value="Oltiqosh MFY"><option value="Qizilmusht MFY"><option value="Naymancha MFY"><option value="Urganji MFY"><option value="Oqjar MFY"><option value="Qashqar MFY"><option value="Mangʻit MFY"><option value="Pishqaron MFY"><option value="Shodlik MFY"><option value="Taypoq MFY"><option value="Oqtepa"><option value="Doimobod">
+                    </datalist>
                 </div>
-                <div class="input-group">
-                    <input type="date" id="birthDate">
-                    <span id="errBirthDate" class="error-text">Iltimos, tug'ilgan sanani tanlang!</span>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="address" list="mfyList" placeholder="Manzil:">
-                    <span id="errAddress" class="error-text">Iltimos, manzilni kiriting!</span>
-                </div>
-                <datalist id="mfyList">
-                    <option value="Uvaysiy MFY"><option value="Navbahor MFY"><option value="Mulkobod MFY"><option value="Gʻumoyli MFY"><option value="Oltiqosh (Oltiqush) MFY"><option value="Qizilmusht MFY"><option value="Naymancha MFY"><option value="Urganji MFY"><option value="Oqjar MFY"><option value="Qashqar MFY"><option value="Mangʻit MFY"><option value="Pishqaron MFY"><option value="Shodlik MFY"><option value="Taypoq MFY"><option value="Oqtepa"><option value="Shopoʻlat"><option value="Sanam"><option value="Katta boybucha"><option value="Qoramulla"><option value="Qiyali qoʻrgʻoncha"><option value="Yashik"><option value="Istiqlol"><option value="Uymovut"><option value="Boʻriqum"><option value="Qum qiyali"><option value="Qiyali"><option value="Tumor"><option value="Teleming"><option value="Qora koʻrpa"><option value="Chinobod"><option value="Abdusamad"><option value="Kapasaroy"><option value="Taptiqsaroy"><option value="Bogʻish"><option value="Katta turk"><option value="Kichik turk"><option value="Doimobod">
-                </datalist>
-                <div class="input-group">
-                    <input type="text" id="groupNameInput" list="groupList" placeholder="Guruh:">
-                    <span id="errGroup" class="error-text">Iltimos, guruhni kiriting!</span>
-                </div>
-                <datalist id="groupList"></datalist>
-                <div class="input-group">
-                    <input type="text" id="phone" placeholder="Shaxsiy raqam:">
-                    <span id="errPhone" class="error-text">Telefon raqami to'liq emas!</span>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="homePhone" placeholder="Uy raqam:">
-                    <span id="errHomePhone" class="error-text">Uy raqami to'liq emas!</span>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="graduation" placeholder="Bitirgan:">
-                    <span id="errGraduation" class="error-text">Iltimos, bitirgan joyini kiriting!</span>
-                </div>
+                <div class="input-group"><input type="text" id="groupNameInput" list="groupList" placeholder="Guruh:"><datalist id="groupList"></datalist></div>
+                <div class="input-group"><input type="text" id="phone" placeholder="Shaxsiy raqam:" required></div>
+                <div class="input-group"><input type="text" id="homePhone" placeholder="Uy raqam:"></div>
+                <div class="input-group"><input type="text" id="graduation" placeholder="Bitirgan:"></div>
                 <div class="input-group">
                     <select id="studentStatus">
-                        <option value="active" id="optActive">Hozir o'qiyotgan</option>
-                        <option value="graduated" id="optGrad">Bitirgan</option>
-                        <option value="archived" id="optArch">Arxivlangan</option>
-                        <option value="registered" id="optReg">Ro'yxatga olingan</option>
+                        <option value="active">Hozir o'qiyotgan</option>
+                        <option value="graduated">Bitirgan</option>
+                        <option value="archived">Arxivlangan</option>
+                        <option value="registered">Ro'yxatga olingan</option>
                     </select>
                 </div>
-                <div class="input-group">
-                    <input type="text" id="performance" placeholder="O'zlashtirishi:">
-                    <span id="errPerformance" class="error-text">Iltimos, o'zlashtirishini kiriting!</span>
-                </div>
+                <div class="input-group"><input type="text" id="performance" placeholder="O'zlashtirishi:"></div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeStudentModal()" id="btnCancel1">Bekor qilish</button>
+                    <button type="button" class="btn-cancel" onclick="closeStudentModal()">Bekor qilish</button>
                     <button type="submit" class="btn-action" id="btnAdd1">+ QO'SHISH</button>
                 </div>
             </form>
@@ -424,81 +313,53 @@
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalRegTitle">O'quvchini ro'yxatga olish</h3>
+                <h3>O'quvchini ro'yxatga olish</h3>
                 <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
             </div>
             <form id="registerForm" class="modal-form">
-                <div class="input-group">
-                    <input type="text" id="regFullName" placeholder="F.I.Sh. (Familiya Ism)">
-                    <span id="errRegName" class="error-text">Iltimos, ism familiyani kiriting!</span>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="regPhone" placeholder="Telefon raqami">
-                    <span id="errRegPhone" class="error-text">Telefon raqami to'liq emas!</span>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="regAddress" list="mfyList" placeholder="Manzilni tanlang yoki yozing...">
-                    <span id="errRegAddress" class="error-text">Iltimos, manzilni kiriting!</span>
-                </div>
+                <div class="input-group"><input type="text" id="regFullName" placeholder="F.I.Sh. (Familiya Ism)" required></div>
+                <div class="input-group"><input type="text" id="regPhone" placeholder="Telefon raqami" required></div>
+                <div class="input-group"><input type="text" id="regAddress" list="mfyList" placeholder="Manzilni tanlang yoki yozing..." required></div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeRegisterModal()" id="btnCancel2">Bekor qilish</button>
+                    <button type="button" class="btn-cancel" onclick="closeRegisterModal()">Bekor qilish</button>
                     <button type="submit" class="btn-action" id="btnSubmitReg">Ro'yxatga olish</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- GURUH QO'SHISH MODAL OYNASI -->
+    <!-- GURUH QO'SHISH MODAL -->
     <div id="groupModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalGroupTitle">Yangi guruh qo'shish</h3>
+                <h3>Yangi guruh qo'shish</h3>
                 <span class="close-btn" onclick="closeGroupModal()">&times;</span>
             </div>
             <form id="groupForm" class="modal-form">
-                <div class="input-group">
-                    <input type="text" id="groupName" placeholder="Guruh nomi (masalan: Python-1)" required>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="courseName" list="courseList" placeholder="Kurs yo'nalishi" required>
-                    <datalist id="courseList"></datalist>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="teacherName" list="teacherList" placeholder="O'qituvchi F.I.Sh." required>
-                    <datalist id="teacherList">
-                        <option value="Olimjonov Mavlonjon">
-                        <option value="Asilbek Komilov">
-                        <option value="Sardor Aliyev">
-                        <option value="Zarnigor Karimova">
-                    </datalist>
-                </div>
+                <div class="input-group"><input type="text" id="groupName" placeholder="Guruh nomi" required></div>
+                <div class="input-group"><input type="text" id="courseName" placeholder="Kurs yo'nalishi" required></div>
+                <div class="input-group"><input type="text" id="teacherName" placeholder="O'qituvchi F.I.Sh." required></div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeGroupModal()" id="btnCancel3">Bekor qilish</button>
+                    <button type="button" class="btn-cancel" onclick="closeGroupModal()">Bekor qilish</button>
                     <button type="submit" class="btn-action" id="btnSaveGroup">Saqlash</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- KURS QO'SHISH MODAL OYNASI -->
+    <!-- KURS QO'SHISH MODAL -->
     <div id="courseModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalCourseTitle">Yangi kurs qo'shish</h3>
+                <h3>Yangi kurs qo'shish</h3>
                 <span class="close-btn" onclick="closeCourseModal()">&times;</span>
             </div>
             <form id="courseForm" class="modal-form">
-                <div class="input-group">
-                    <input type="text" id="newCourseName" placeholder="Kurs nomi (masalan: Frontend)" required>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="newCoursePrice" placeholder="Narxi (masalan: 500,000 so'm)" required>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="newCourseDuration" placeholder="Davomiyligi (masalan: 6 oy)" required>
-                </div>
+                <div class="input-group"><input type="text" id="newCourseName" placeholder="Kurs nomi" required></div>
+                <div class="input-group"><input type="text" id="newCoursePrice" placeholder="Narxi" required></div>
+                <div class="input-group"><input type="text" id="newCourseDuration" placeholder="Davomiyligi" required></div>
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeCourseModal()" id="btnCancel4">Bekor qilish</button>
+                    <button type="button" class="btn-cancel" onclick="closeCourseModal()">Bekor qilish</button>
                     <button type="submit" class="btn-action" id="btnSaveCourse">Saqlash</button>
                 </div>
             </form>
@@ -509,8 +370,33 @@
         const API_URL = '';
         let currentFilter = 'all';
 
-        // Modallarni ochish va yopish
-        function openStudentModal() { document.getElementById('studentModal').style.display = 'flex'; }
+        function openAddStudentModal() {
+            document.getElementById('editingStudentId').value = '';
+            document.getElementById('modalStudentTitle').innerText = "Yangi student qo'shish";
+            document.getElementById('btnAdd1').innerText = "+ QO'SHISH";
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentModal').style.display = 'flex';
+        }
+
+        function openEditModal(studentJson) {
+            const s = JSON.parse(decodeURIComponent(studentJson));
+            document.getElementById('editingStudentId').value = s.id;
+            document.getElementById('modalStudentTitle').innerText = "O'quvchi ma'lumotlarini tahrirlash";
+            document.getElementById('btnAdd1').innerText = "SAQLASH";
+
+            document.getElementById('fullName').value = s.full_name || '';
+            document.getElementById('birthDate').value = s.birth_date || '';
+            document.getElementById('address').value = s.address || '';
+            document.getElementById('groupNameInput').value = s.group_name || '';
+            document.getElementById('phone').value = s.phone || '';
+            document.getElementById('homePhone').value = s.home_phone || '';
+            document.getElementById('graduation').value = s.graduation || '';
+            document.getElementById('studentStatus').value = s.status || 'active';
+            document.getElementById('performance').value = s.performance || '';
+
+            document.getElementById('studentModal').style.display = 'flex';
+        }
+
         function closeStudentModal() { document.getElementById('studentModal').style.display = 'none'; }
         function openRegisterModal() { document.getElementById('registerModal').style.display = 'flex'; }
         function closeRegisterModal() { document.getElementById('registerModal').style.display = 'none'; }
@@ -525,12 +411,15 @@
             if (tab === 'students') {
                 document.getElementById('sectionStudents').classList.add('active-section');
                 document.getElementById('menuStudents').classList.add('active');
+                loadStudents(currentFilter);
             } else if (tab === 'groups') {
                 document.getElementById('sectionGroups').classList.add('active-section');
                 document.getElementById('menuGroups').classList.add('active');
+                loadGroups();
             } else if (tab === 'courses') {
                 document.getElementById('sectionCourses').classList.add('active-section');
                 document.getElementById('menuCourses').classList.add('active');
+                loadCourses();
             } else if (tab === 'notifications') {
                 document.getElementById('sectionNotifications').classList.add('active-section');
                 document.getElementById('menuNotifications').classList.add('active');
@@ -545,7 +434,6 @@
             p.type = p.type === 'password' ? 'text' : 'password';
         }
 
-        // Helper: Tugmaga Loading effekti qo'shish
         async function handleFormSubmit(btnId, loadingText, asyncFn) {
             const btn = document.getElementById(btnId);
             if (!btn) return await asyncFn();
@@ -560,7 +448,6 @@
             }
         }
 
-        // Login Formasi
         document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
             await handleFormSubmit('lBtnLogin', 'Kirilmoqda...', async () => {
@@ -575,7 +462,6 @@
             document.getElementById('loginCard').style.display = 'flex';
         }
 
-        // O'quvchilar ro'yxatini yuklash
         async function loadStudents(filter = 'all') {
             currentFilter = filter;
             try {
@@ -600,20 +486,21 @@
             filtered.forEach(s => {
                 const tr = document.createElement('tr');
                 tr.id = `student-row-${s.id}`;
+                const encodedStudent = encodeURIComponent(JSON.stringify(s));
                 tr.innerHTML = `
                     <td>${s.id || '-'}</td>
-                    <td>${s.full_name || s.name || '-'}</td>
+                    <td>${s.full_name || '-'}</td>
                     <td>${s.phone || '-'}</td>
-                    <td>${s.group_name || s.group || '-'}</td>
+                    <td>${s.group_name || '-'}</td>
                     <td>${s.address || '-'}</td>
                     <td style="text-align: right;">
+                        <button class="btn-edit-table" onclick="openEditModal('${encodedStudent}')">Tahrirlash</button>
                         <button class="btn-delete-table" onclick="deleteStudent('${s.id}')">O'chirish</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Statistika hisoblari
             document.getElementById('statTotal').innerText = `${students.length} ta`;
             document.getElementById('labelTotal').innerText = `${students.length} ta o'quvchi`;
 
@@ -634,83 +521,44 @@
             document.getElementById('labelArchived').innerText = `${archCount} ta o'quvchi`;
         }
 
-        // Fast Delete (Optimistic UI)
         async function deleteStudent(id) {
             if (!confirm("Haqiqatan ham bu o'quvchini o'chirmoqchimisiz?")) return;
-
             const row = document.getElementById(`student-row-${id}`);
-            if (row) row.remove(); // Darhol ekrandan o'chadi
+            if (row) row.remove();
 
             try {
-                const res = await fetch(`${API_URL}/api/students/${id}`, { method: 'DELETE' });
-                if (!res.ok) throw new Error("Serverda o'chirishda xatolik");
+                await fetch(`${API_URL}/api/students/${id}`, { method: 'DELETE' });
             } catch (err) {
-                alert("O'chirishda xatolik bo'ldi. Qayta yuklanmoqda...");
                 loadStudents(currentFilter);
             }
         }
 
-        // Ro'yxatga olish Formasi
-        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            await handleFormSubmit('btnSubmitReg', 'Saqlanmoqda...', async () => {
-                const name = document.getElementById('regFullName').value;
-                const phone = document.getElementById('regPhone').value;
-                const address = document.getElementById('regAddress').value;
-
-                try {
-                    const res = await fetch(`${API_URL}/api/students`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            full_name: name,
-                            phone: phone,
-                            address: address,
-                            status: 'registered'
-                        })
-                    });
-                    if (res.ok) {
-                        closeRegisterModal();
-                        document.getElementById('registerForm').reset();
-                        loadStudents(currentFilter);
-                    } else {
-                        alert("Saqlashda xatolik yuz berdi!");
-                    }
-                } catch (err) {
-                    alert("Server bilan ulanishda xatolik!");
-                }
-            });
-        });
-
-        // O'quvchi Qo'shish Formasi
+        // O'quvchi Qo'shish yoki Tahrirlash Formasi
         document.getElementById('studentForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            await handleFormSubmit('btnAdd1', 'Saqlanmoqda...', async () => {
-                const name = document.getElementById('fullName').value;
-                const birthDate = document.getElementById('birthDate').value;
-                const address = document.getElementById('address').value;
-                const group = document.getElementById('groupNameInput').value;
-                const phone = document.getElementById('phone').value;
-                const homePhone = document.getElementById('homePhone').value;
-                const graduation = document.getElementById('graduation').value;
-                const status = document.getElementById('studentStatus').value;
-                const performance = document.getElementById('performance').value;
+            const editingId = document.getElementById('editingStudentId').value;
 
+            const studentData = {
+                full_name: document.getElementById('fullName').value,
+                birth_date: document.getElementById('birthDate').value,
+                address: document.getElementById('address').value,
+                group_name: document.getElementById('groupNameInput').value,
+                phone: document.getElementById('phone').value,
+                home_phone: document.getElementById('homePhone').value,
+                graduation: document.getElementById('graduation').value,
+                status: document.getElementById('studentStatus').value,
+                performance: document.getElementById('performance').value
+            };
+
+            const url = editingId ? `${API_URL}/api/students/${editingId}` : `${API_URL}/api/students`;
+            const method = editingId ? 'PUT' : 'POST';
+
+            await handleFormSubmit('btnAdd1', 'Saqlanmoqda...', async () => {
                 try {
-                    const res = await fetch(`${API_URL}/api/students`, {
-                        method: 'POST',
+                    const res = await fetch(url, {
+                        method: method,
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            full_name: name,
-                            birth_date: birthDate,
-                            address: address,
-                            group_name: group,
-                            phone: phone,
-                            home_phone: homePhone,
-                            graduation: graduation,
-                            status: status,
-                            performance: performance
-                        })
+                        body: JSON.stringify(studentData)
                     });
                     if (res.ok) {
                         closeStudentModal();
@@ -725,61 +573,98 @@
             });
         });
 
-        // Guruh Qo'shish Formasi
-        document.getElementById('groupForm')?.addEventListener('submit', async function(e) {
+        // Ro'yxatga olish Formasi
+        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            await handleFormSubmit('btnSaveGroup', 'Saqlanmoqda...', async () => {
-                const name = document.getElementById('groupName').value;
-                const course = document.getElementById('courseName').value;
-                const teacher = document.getElementById('teacherName').value;
-
-                try {
-                    const res = await fetch(`${API_URL}/api/groups`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, course, teacher })
-                    });
-                    if (res.ok) {
-                        closeGroupModal();
-                        document.getElementById('groupForm').reset();
-                    }
-                } catch (err) {
-                    console.error(err);
+            await handleFormSubmit('btnSubmitReg', 'Saqlanmoqda...', async () => {
+                const data = {
+                    full_name: document.getElementById('regFullName').value,
+                    phone: document.getElementById('regPhone').value,
+                    address: document.getElementById('regAddress').value,
+                    status: 'registered'
+                };
+                const res = await fetch(`${API_URL}/api/students`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    closeRegisterModal();
+                    document.getElementById('registerForm').reset();
+                    loadStudents(currentFilter);
                 }
             });
         });
 
-        // Kurs Qo'shish Formasi
+        async function loadGroups() {
+            const res = await fetch(`${API_URL}/api/groups`);
+            if (res.ok) {
+                const groups = await res.json();
+                const tbody = document.getElementById('groupTableBody');
+                tbody.innerHTML = '';
+                groups.forEach(g => {
+                    tbody.innerHTML += `<tr><td>${g.id}</td><td>${g.group_name}</td><td>${g.course_name}</td><td>${g.teacher_name}</td><td style="text-align: right;"><button class="btn-delete-table" onclick="deleteGroup(${g.id})">O'chirish</button></td></tr>`;
+                });
+            }
+        }
+
+        async function deleteGroup(id) {
+            await fetch(`${API_URL}/api/groups/${id}`, { method: 'DELETE' });
+            loadGroups();
+        }
+
+        document.getElementById('groupForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                group_name: document.getElementById('groupName').value,
+                course_name: document.getElementById('courseName').value,
+                teacher_name: document.getElementById('teacherName').value
+            };
+            await fetch(`${API_URL}/api/groups`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            closeGroupModal();
+            loadGroups();
+        });
+
+        async function loadCourses() {
+            const res = await fetch(`${API_URL}/api/courses`);
+            if (res.ok) {
+                const courses = await res.json();
+                const tbody = document.getElementById('courseTableBody');
+                tbody.innerHTML = '';
+                courses.forEach(c => {
+                    tbody.innerHTML += `<tr><td>${c.id}</td><td>${c.course_name}</td><td>${c.price}</td><td>${c.duration}</td><td style="text-align: right;"><button class="btn-delete-table" onclick="deleteCourse(${c.id})">O'chirish</button></td></tr>`;
+                });
+            }
+        }
+
+        async function deleteCourse(id) {
+            await fetch(`${API_URL}/api/courses/${id}`, { method: 'DELETE' });
+            loadCourses();
+        }
+
         document.getElementById('courseForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            await handleFormSubmit('btnSaveCourse', 'Saqlanmoqda...', async () => {
-                const name = document.getElementById('newCourseName').value;
-                const price = document.getElementById('newCoursePrice').value;
-                const duration = document.getElementById('newCourseDuration').value;
-
-                try {
-                    const res = await fetch(`${API_URL}/api/courses`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, price, duration })
-                    });
-                    if (res.ok) {
-                        closeCourseModal();
-                        document.getElementById('courseForm').reset();
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
+            const data = {
+                course_name: document.getElementById('newCourseName').value,
+                price: document.getElementById('newCoursePrice').value,
+                duration: document.getElementById('newCourseDuration').value
+            };
+            await fetch(`${API_URL}/api/courses`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             });
+            closeCourseModal();
+            loadCourses();
         });
 
         function changeTheme() {
             const theme = document.getElementById('themeSelect').value;
             document.body.className = theme === 'dark' ? 'dark-theme' : 'light-theme';
-        }
-
-        function changeLanguage() {
-            // Tilni almashtirish logikasi
         }
     </script>
 </body>
